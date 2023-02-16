@@ -1,12 +1,14 @@
 import pygame
 
 pygame.init()
-screen = pygame.display.set_mode((800, 400))
+screen_width = 800
+screen_height = 400
+screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption('Runner')  # window name
 clock = pygame.time.Clock()
 
-test_surface = pygame.Surface((100, 200))  # simple surface
-test_surface.fill('Red')
+sky_surface = pygame.image.load('graphics/Sky.png')
+ground_surface = pygame.image.load('graphics/ground.png')
 
 while True:  # main game loop
     for event in pygame.event.get():
@@ -14,7 +16,9 @@ while True:  # main game loop
             pygame.quit()
             exit()
 
-    screen.blit(test_surface, (200, 100))  # puts the surface on the screen
+    # draw background
+    screen.blit(sky_surface, (0, 0))
+    screen.blit(ground_surface, (0, sky_surface.get_height()))
 
     pygame.display.update()
     clock.tick(60)  # limit the loop to 60 times per sec
