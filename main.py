@@ -26,6 +26,7 @@ player_x_pos = 100
 player_y_pos = sky_surf.get_height()  # on the ground
 player_rect = player_surf.get_rect(
     midbottom=(player_x_pos, player_y_pos))  # now positioning rectangle from midbottom point
+player_gravity = 0
 
 # score
 score = 0
@@ -40,9 +41,10 @@ while True:  # main game loop
             exit()
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
-                print('Space')
-        if event.type == pygame.KEYUP:
-            print('Up')
+                player_gravity = -20
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if player_rect.collidepoint(pygame.mouse.get_pos()):
+                player_gravity = -20
 
     # draw background
     screen.blit(sky_surf, (0, 0))
@@ -50,12 +52,16 @@ while True:  # main game loop
 
     # draw objects
     screen.blit(snail_surf, snail_rect)
-    screen.blit(player_surf, player_rect)
     pygame.draw.rect(screen, '#c0e8ec', score_rect, 10)
     pygame.draw.rect(screen, '#c0e8ec', score_rect)
     screen.blit(score_surf, score_rect)
 
-    player_rect.left += 1
+    # player
+    player_gravity += 1
+    player_rect.bottom += player_gravity
+    if player_rect.bottom > sky_surf.get_height(): player_rect.bottom = sky_surf.get_height()
+    screen.blit(player_surf, player_rect)
+
 
     snail_rect.left -= 3
     if snail_rect.right <= 0: snail_rect.left = screen_width
@@ -66,13 +72,6 @@ while True:  # main game loop
         score_surf = font.render(score_str, False, text_color)
         score_rect = score_surf.get_rect(center=(screen_width / 2, screen_height / 6))
 
-    mouse_pos = pygame.mouse.get_pos()
-    if player_rect.collidepoint((mouse_pos)) and pygame.mouse.get_pressed()[0]:  # mouse touched the player and pressed
-        print('Touch')
-
-    keys = pygame.key.get_pressed()
-    if keys[pygame.K_SPACE]:
-        print('Jump')
 
     pygame.display.update()
     clock.tick(60)  # limit the loop to 60 times per sec
