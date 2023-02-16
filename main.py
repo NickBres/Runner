@@ -34,43 +34,54 @@ score_str = 'Score: ' + str(score)
 score_surf = font.render(score_str, False, text_color)
 score_rect = score_surf.get_rect(center=(screen_width / 2, screen_height / 6))
 
+game_active = True
+
 while True:  # main game loop
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
             exit()
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_SPACE:
-                player_gravity = -20
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            if player_rect.collidepoint(pygame.mouse.get_pos()):
-                player_gravity = -20
+        if game_active:
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE and player_rect.bottom == sky_surf.get_height():
+                        player_gravity = -20
+            if event.type == pygame.MOUSEBUTTONDOWN and player_rect.bottom == sky_surf.get_height():
+                if player_rect.collidepoint(pygame.mouse.get_pos()):
+                    player_gravity = -20
+        else:
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    snail_rect.left = screen_width
+                    player_rect.bottom = sky_surf.get_height()
+                    game_active = True
+                    score = 0
+
 
     # draw background
     screen.blit(sky_surf, (0, 0))
     screen.blit(ground_surf, (0, sky_surf.get_height()))
 
-    # draw objects
-    screen.blit(snail_surf, snail_rect)
     pygame.draw.rect(screen, '#c0e8ec', score_rect, 10)
     pygame.draw.rect(screen, '#c0e8ec', score_rect)
     screen.blit(score_surf, score_rect)
 
-    # player
-    player_gravity += 1
-    player_rect.bottom += player_gravity
-    if player_rect.bottom > sky_surf.get_height(): player_rect.bottom = sky_surf.get_height()
-    screen.blit(player_surf, player_rect)
+    if game_active:
+        screen.blit(snail_surf, snail_rect)
+
+        # player
+        player_gravity += 1
+        player_rect.bottom += player_gravity
+        if player_rect.bottom > sky_surf.get_height(): player_rect.bottom = sky_surf.get_height()
+        screen.blit(player_surf, player_rect)
 
 
-    snail_rect.left -= 3
-    if snail_rect.right <= 0: snail_rect.left = screen_width
+        snail_rect.left -= 4
+        if snail_rect.right <= 0: snail_rect.left = screen_width
 
-    if player_rect.colliderect(snail_rect):
-        score += 1
-        score_str = 'Score: ' + str(score)
-        score_surf = font.render(score_str, False, text_color)
-        score_rect = score_surf.get_rect(center=(screen_width / 2, screen_height / 6))
+        if player_rect.colliderect(snail_rect):
+            game_active = False
+    else:
+        print('Game over')
 
 
     pygame.display.update()
