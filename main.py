@@ -26,12 +26,24 @@ def obstacle_movement(obstacles):
         return new_list
     return []
 
+
 def collisions(player, obstacles):
     if obstacles:
         for obstacle in obstacles:
             if player.colliderect(obstacle):
                 return True
     return False
+
+
+def player_animation():
+    global player_surf, player_index
+    if player_rect.bottom < sky_surf.get_height():  # jump
+        player_surf = player_jump
+    else:  # walk
+        player_index += 0.1
+        if player_index >= len(player_walk): player_index = 0
+        player_surf = player_walk[int(player_index)]
+
 
 game_active = False
 pygame.init()
@@ -56,7 +68,13 @@ fly_surf = pygame.image.load('graphics/Fly/Fly1.png').convert_alpha()
 obstacles = []
 
 # player
-player_surf = pygame.image.load('graphics/player/player_walk_1.png').convert_alpha()
+player_walk1 = pygame.image.load('graphics/player/player_walk_1.png').convert_alpha()
+player_walk2 = pygame.image.load('graphics/player/player_walk_2.png').convert_alpha()
+player_walk = [player_walk1, player_walk2]
+player_index = 0
+player_jump = pygame.image.load('graphics/player/jump.png').convert_alpha()
+
+player_surf = player_walk[player_index]
 player_x_pos = 100
 player_y_pos = sky_surf.get_height()  # on the ground
 player_rect = player_surf.get_rect(
@@ -97,10 +115,11 @@ while True:  # main game loop
                     game_active = True
                     start_time = pygame.time.get_ticks()
         if event.type == obstacle_timer and game_active:
-            if randint(0,2):
+            if randint(0, 2):
                 obstacles.append(snail_surf.get_rect(midbottom=(randint(900, 1100), sky_surf.get_height())))
             else:
-                obstacles.append(fly_surf.get_rect(midbottom=(randint(900, 1100), sky_surf.get_height() - player_surf.get_height())))
+                obstacles.append(
+                    fly_surf.get_rect(midbottom=(randint(900, 1100), sky_surf.get_height() - player_surf.get_height())))
 
     # draw background
     screen.blit(sky_surf, (0, 0))
@@ -113,6 +132,7 @@ while True:  # main game loop
         player_gravity += 1
         player_rect.bottom += player_gravity
         if player_rect.bottom > sky_surf.get_height(): player_rect.bottom = sky_surf.get_height()
+        player_animation()
         screen.blit(player_surf, player_rect)
 
         if collisions(player_rect, obstacles):
