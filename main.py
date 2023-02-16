@@ -1,5 +1,13 @@
 import pygame
 
+def display_score():
+    curr_time = pygame.time.get_ticks()
+    score = (curr_time - start_time)//1000
+    score_str = 'Score: ' + str(score)
+    score_surf = font.render(score_str, False, text_color)
+    score_rect = score_surf.get_rect(center=(screen_width / 2, screen_height / 6))
+    screen.blit(score_surf, score_rect)
+
 pygame.init()
 screen_width = 800
 screen_height = 400
@@ -8,6 +16,7 @@ pygame.display.set_caption('Runner')  # window name
 clock = pygame.time.Clock()
 font = pygame.font.Font('font/Pixeltype.ttf', 50)
 text_color = (64,64,64)
+start_time = 0
 
 # background
 sky_surf = pygame.image.load(
@@ -28,11 +37,7 @@ player_rect = player_surf.get_rect(
     midbottom=(player_x_pos, player_y_pos))  # now positioning rectangle from midbottom point
 player_gravity = 0
 
-# score
-score = 0
-score_str = 'Score: ' + str(score)
-score_surf = font.render(score_str, False, text_color)
-score_rect = score_surf.get_rect(center=(screen_width / 2, screen_height / 6))
+
 
 game_active = True
 
@@ -54,20 +59,17 @@ while True:  # main game loop
                     snail_rect.left = screen_width
                     player_rect.bottom = sky_surf.get_height()
                     game_active = True
-                    score = 0
+                    start_time = pygame.time.get_ticks()
+
 
 
     # draw background
     screen.blit(sky_surf, (0, 0))
     screen.blit(ground_surf, (0, sky_surf.get_height()))
 
-    pygame.draw.rect(screen, '#c0e8ec', score_rect, 10)
-    pygame.draw.rect(screen, '#c0e8ec', score_rect)
-    screen.blit(score_surf, score_rect)
-
     if game_active:
         screen.blit(snail_surf, snail_rect)
-
+        display_score()
         # player
         player_gravity += 1
         player_rect.bottom += player_gravity
