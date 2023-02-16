@@ -38,6 +38,11 @@ while True:  # main game loop
         if event.type == pygame.QUIT:
             pygame.quit()
             exit()
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE:
+                print('Space')
+        if event.type == pygame.KEYUP:
+            print('Up')
 
     # draw background
     screen.blit(sky_surf, (0, 0))
@@ -64,6 +69,10 @@ while True:  # main game loop
     mouse_pos = pygame.mouse.get_pos()
     if player_rect.collidepoint((mouse_pos)) and pygame.mouse.get_pressed()[0]:  # mouse touched the player and pressed
         print('Touch')
+
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_SPACE]:
+        print('Jump')
 
     pygame.display.update()
     clock.tick(60)  # limit the loop to 60 times per sec
