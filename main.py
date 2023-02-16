@@ -45,6 +45,11 @@ while True:  # main game loop
     # draw objects
     screen.blit(snail_surf, snail_rect)
     screen.blit(player_surf, player_rect)
+    pygame.draw.rect(screen, 'Pink', score_rect, 10)
+    pygame.draw.rect(screen, 'Pink', score_rect)
+    pygame.draw.aaline(screen, 'Red', (0, 0), (screen_width, screen_height), 10)
+    pygame.draw.line(screen, 'Red', (100, 100), (screen_width + 100, screen_height + 100), 10)
+    pygame.draw.ellipse(screen, 'Silver', pygame.Rect(50, 200, 100, 100))
     screen.blit(score_surf, score_rect)
 
     player_rect.left += 1
