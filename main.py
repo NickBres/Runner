@@ -7,6 +7,7 @@ screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption('Runner')  # window name
 clock = pygame.time.Clock()
 font = pygame.font.Font('font/Pixeltype.ttf', 50)
+text_color = (64,64,64)
 
 # background
 sky_surf = pygame.image.load(
@@ -29,8 +30,8 @@ player_rect = player_surf.get_rect(
 # score
 score = 0
 score_str = 'Score: ' + str(score)
-score_surf = font.render(score_str, False, 'White')
-score_rect = score_surf.get_rect(center=(screen_width / 2, screen_height / 2))
+score_surf = font.render(score_str, False, text_color)
+score_rect = score_surf.get_rect(center=(screen_width / 2, screen_height / 6))
 
 while True:  # main game loop
     for event in pygame.event.get():
@@ -45,11 +46,8 @@ while True:  # main game loop
     # draw objects
     screen.blit(snail_surf, snail_rect)
     screen.blit(player_surf, player_rect)
-    pygame.draw.rect(screen, 'Pink', score_rect, 10)
-    pygame.draw.rect(screen, 'Pink', score_rect)
-    pygame.draw.aaline(screen, 'Red', (0, 0), (screen_width, screen_height), 10)
-    pygame.draw.line(screen, 'Red', (100, 100), (screen_width + 100, screen_height + 100), 10)
-    pygame.draw.ellipse(screen, 'Silver', pygame.Rect(50, 200, 100, 100))
+    pygame.draw.rect(screen, '#c0e8ec', score_rect, 10)
+    pygame.draw.rect(screen, '#c0e8ec', score_rect)
     screen.blit(score_surf, score_rect)
 
     player_rect.left += 1
@@ -60,8 +58,8 @@ while True:  # main game loop
     if player_rect.colliderect(snail_rect):
         score += 1
         score_str = 'Score: ' + str(score)
-        score_surf = font.render(score_str, False, 'White')
-        score_rect = score_surf.get_rect(center=(screen_width / 2, screen_height / 2))
+        score_surf = font.render(score_str, False, text_color)
+        score_rect = score_surf.get_rect(center=(screen_width / 2, screen_height / 6))
 
     mouse_pos = pygame.mouse.get_pos()
     if player_rect.collidepoint((mouse_pos)) and pygame.mouse.get_pressed()[0]:  # mouse touched the player and pressed
