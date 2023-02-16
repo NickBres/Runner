@@ -12,9 +12,10 @@ test_font = pygame.font.Font('font/Pixeltype.ttf', 50)
 text_surface = test_font.render('My Game', False, 'White')
 
 # image upload
-sky_surface = pygame.image.load('graphics/Sky.png')
-ground_surface = pygame.image.load('graphics/ground.png')
-snail_surface = pygame.image.load('graphics/snail/snail1.png')
+sky_surface = pygame.image.load(
+    'graphics/Sky.png').convert()  # convert it to better format for pygame, for better performance
+ground_surface = pygame.image.load('graphics/ground.png').convert()
+snail_surface = pygame.image.load('graphics/snail/snail1.png').convert_alpha()  # convert it without background
 
 # snail
 snail_x_pos = screen_width
@@ -38,7 +39,6 @@ while True:  # main game loop
 
     snail_x_pos -= 3
     if snail_x_pos <= -snail_surface.get_width(): snail_x_pos = screen_width
-
 
     pygame.display.update()
     clock.tick(60)  # limit the loop to 60 times per sec
