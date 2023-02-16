@@ -50,5 +50,8 @@ while True:  # main game loop
     snail_rect.left -= 3
     if snail_rect.right <= 0: snail_rect.left = screen_width
 
+    if player_rect.colliderect(snail_rect):
+        print('Collision')
+
     pygame.display.update()
     clock.tick(60)  # limit the loop to 60 times per sec
