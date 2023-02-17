@@ -46,7 +46,7 @@ class Player(pygame.sprite.Sprite):
 
 
 class Obstacle(pygame.sprite.Sprite):
-    def __init__(self, type, x, y):
+    def __init__(self, type, x, y , speed):
         super().__init__()
         if type == 'Fly':
             fly_frame1 = pygame.image.load('graphics/Fly/Fly1.png').convert_alpha()
@@ -59,6 +59,7 @@ class Obstacle(pygame.sprite.Sprite):
             self.frames = [snail_frame1, snail_frame2]
             self.y = y
 
+        self.speed = speed
         self.animation_index = 0
         self.x = x
         self.image = self.frames[self.animation_index]
@@ -71,7 +72,7 @@ class Obstacle(pygame.sprite.Sprite):
 
     def update(self):
         self.animation_state()
-        self.rect.x -= 6
+        self.rect.x -= speed
         self.destroy()
 
     def destroy(self):
@@ -107,6 +108,7 @@ font = pygame.font.Font('font/Pixeltype.ttf', 50)
 text_color = (64, 64, 64)
 start_time = 0
 best = 0
+speed = 6
 bg_music = pygame.mixer.Sound('audio/music.wav')
 bg_music.set_volume(0.1)
 bg_music.play(loops=-1)
@@ -114,6 +116,8 @@ bg_music.play(loops=-1)
 # background
 sky_surf = pygame.image.load('graphics/Sky.png').convert()
 ground_surf = pygame.image.load('graphics/ground.png').convert()
+ground_rect1 = ground_surf.get_rect(midtop=(screen_width/2, sky_surf.get_height()))
+ground_rect2 = ground_surf.get_rect(midtop=(screen_width+screen_width/2, sky_surf.get_height()))
 
 # Groups
 player = pygame.sprite.GroupSingle()
@@ -150,11 +154,18 @@ while True:  # main game loop
         else:
             if event.type == obstacle_timer:
                 obstacle_group.add(
-                    Obstacle(choice(['Fly', 'Snail', 'Snail', 'Snail']), randint(900, 1100), sky_surf.get_height()))
+                    Obstacle(choice(['Fly', 'Snail', 'Snail', 'Snail']), randint(900, 1100), sky_surf.get_height(),speed))
 
     # draw background
     screen.blit(sky_surf, (0, 0))
-    screen.blit(ground_surf, (0, sky_surf.get_height()))
+    screen.blit(ground_surf, ground_rect1)
+    screen.blit(ground_surf, ground_rect2)
+    ground_rect1.x -= speed - 2
+    ground_rect2.x -= speed - 2
+    if ground_rect1.x < -screen_width:
+        ground_rect1.x = screen_width
+    if ground_rect2.x < -screen_width:
+        ground_rect2.x = screen_width
 
     if game_active:
         best = display_score()
